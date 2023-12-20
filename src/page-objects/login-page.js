@@ -3,6 +3,7 @@ class LoginPage {
 
     constructor(page){
         this.page = page;
+        this.userSelect = '#userSelect';
     };
 
     async gotoLoginPage(){
