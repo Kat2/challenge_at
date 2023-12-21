@@ -37,7 +37,7 @@ test.describe('Deposit Scenario', () => {
 
         //Assert
         await operationPage.depositNotSuccess();
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 
     test('Deposit 0 USD in user account', async({}) => {
@@ -49,7 +49,7 @@ test.describe('Deposit Scenario', () => {
 
         //Assert
         await operationPage.depositNotSuccess();
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 
     test('Deposit an invalid amount in user account', async({}) => {
@@ -61,7 +61,7 @@ test.describe('Deposit Scenario', () => {
         
         //Assert
         await operationPage.depositNotSuccess();
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 
     test('Deposit a positive value in user account', async({}) => {
@@ -74,7 +74,7 @@ test.describe('Deposit Scenario', () => {
 
         //Assert
         await operationPage.depositSuccess();
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 });
 
@@ -96,7 +96,7 @@ test.describe('Withdrawl Scenarios', () =>{
 
         //Assert
         await operationPage.withdrawNotSuccess();
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 
     test('Withdraw a value invalid', async({}) => {
@@ -108,7 +108,7 @@ test.describe('Withdrawl Scenarios', () =>{
 
         //Assert
         await operationPage.withdrawNotSuccess();
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 
     test('Withdraw a value <= the balance', async({}) => {
@@ -121,7 +121,7 @@ test.describe('Withdrawl Scenarios', () =>{
 
         //Assert
         await operationPage.withdrawSuccess();
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 });
 
@@ -135,11 +135,6 @@ test.describe('Load screen test', ()=> {
 
     test('Page reload test', async({})=>{
         //Assert
-        await operationPage.balanceShowed(balance);
+        await operationPage.checkUserInformation(balance);
     });
 });
-
-/*test('Loged user', async({}) =>{
-    //Expect a title
-    await expect(page.getByText('Welcome Harry Potter !!', { exact: true })).toBeVisible();
-})*/

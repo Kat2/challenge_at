@@ -7,8 +7,37 @@ class OperationPage {
         this.withdrawErrorMsg = 'Transaction Failed. You can not withdraw amount more than the balance.';
         this.depositSuccessMsg = 'Deposit Successful';
         this.withdrawSuccessMsg = 'Transaction successful';
+        this.defaultAccountNumber = '1004';
+        this.defaultCurrency = 'Dollar';
+        this.userGreeting = 'Welcome Harry Potter !!';
     }
 
+    //Locators
+    userGreetingLocator = () => this.page.getByText(this.userGreeting, { exact: true });
+    accountNumberLocator = () =>this.page.locator('strong').filter({ hasText: this.defaultAccountNumber });
+    currecyLocator = () => this.page.getByText(this.defaultCurrency, {exact: true});
+
+    depositSuccessLocator = () => this.page.getByText(this.depositSuccessMsg, { exact: true });
+
+    withdrawErrorLocator = () => this.page.getByText(this.withdrawErrorMsg, { exact: true });
+    withdrawSuccessLocator = () => this.page.getByText(this.withdrawSuccessMsg, { exact: true });
+
+    currentBalanceLocator = (balance) => this.page.getByRole('strong').getByText(balance.toString(), { exact: true });
+
+    //Asserts
+    depositNotSuccess = () => expect(this.depositSuccessLocator()).toBeHidden();
+    depositSuccess = () => expect(this.depositSuccessLocator()).toBeVisible();
+
+    withdrawNotSuccess = () => expect(this.withdrawErrorLocator()).toBeVisible();
+    withdrawSuccess = () => expect(this.withdrawSuccessLocator()).toBeVisible();
+
+    checkBalance = (balance) => expect(this.currentBalanceLocator(balance)).toBeVisible();
+
+    checkUserGreeting = () => expect(this.userGreetingLocator()).toBeVisible();
+    checkAccountNumber = () => expect(this.accountNumberLocator()).toBeVisible();
+    checkCurrency = () => expect(this.currecyLocator()).toBeVisible();   
+
+    //Actions
     async startDeposit(value){
         await this.page.getByRole('button', { name: 'Deposit'}).first().click();
         await this.page.getByPlaceholder('amount').click();
@@ -25,20 +54,10 @@ class OperationPage {
         await this.page.getByRole('form').getByRole('button', { name: 'Withdraw'}).click();
     }
 
-    //Locators
-    depositSuccessLocator = () => this.page.getByText(this.depositSuccessMsg, { exact: true });
-
-    withdrawErrorLocator = () => this.page.getByText(this.withdrawErrorMsg, { exact: true });
-    withdrawSuccessLocator = () => this.page.getByText(this.withdrawSuccessMsg, { exact: true });
-
-    currentBalanceLocator = (balance) => this.page.getByRole('strong').getByText(balance.toString(), { exact: true });
-
-    //Asserts
-    depositNotSuccess = () => expect(this.depositSuccessLocator()).toBeHidden();
-    depositSuccess = () => expect(this.depositSuccessLocator()).toBeVisible();
-
-    withdrawNotSuccess = () => expect(this.withdrawErrorLocator()).toBeVisible();
-    withdrawSuccess = () => expect(this.withdrawSuccessLocator()).toBeVisible();
-
-    balanceShowed = (balance) => expect(this.currentBalanceLocator(balance)).toBeVisible();
+    async checkUserInformation(balance){
+        await this.checkAccountNumber();
+        await this.checkUserGreeting();
+        await this.checkCurrency();
+        await this.checkBalance(balance);
+    }
 }
