@@ -16,11 +16,11 @@ test.beforeAll('Login into the system', async({browser}) => {
     await login.login();
 });
 
-/*test.afterAll('Logout', async({browser}) => {
+test.afterAll('Logout', async({browser}) => {
     console.log("Logout application");
     const login = new LoginPage(page);
     login.logout();
-});*/
+});
 
 test.describe('Deposit Scenario', () => {
 
@@ -29,32 +29,52 @@ test.describe('Deposit Scenario', () => {
     });
 
     test('Deposit a negative value in user account', async({}) => {
+        //Arrange
         const defaultDeposit = -100;
+
+        //Action
         await operationPage.startDeposit(defaultDeposit)
-        await expect(operationPage.page.getByText(operationPage.depositSuccessMsg, { exact: true })).toBeHidden();
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+
+        //Assert
+        await operationPage.depositNotSuccess();
+        await operationPage.balanceShowed(balance);
     });
 
     test('Deposit 0 USD in user account', async({}) => {
+        //Arrange
         const defaultDeposit = 0;
-        await operationPage.startDeposit(defaultDeposit)
-        await expect(operationPage.page.getByText(operationPage.depositSuccessMsg, { exact: true })).toBeHidden();
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+
+        //Action
+        await operationPage.startDeposit(defaultDeposit);
+
+        //Assert
+        await operationPage.depositNotSuccess();
+        await operationPage.balanceShowed(balance);
     });
 
     test('Deposit an invalid amount in user account', async({}) => {
+        //Arrange
         const defaultDeposit = 'joao';
+
+        //Action - Exception due to deposit field accepts numbers only
         await expect(operationPage.startDeposit(defaultDeposit)).rejects.toThrow();
-        await expect(operationPage.page.getByText(operationPage.depositSuccessMsg, { exact: true })).toBeHidden();
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+        
+        //Assert
+        await operationPage.depositNotSuccess();
+        await operationPage.balanceShowed(balance);
     });
 
     test('Deposit a positive value in user account', async({}) => {
+        //Arrange
         const defaultDeposit = 1000;
+
+        //Action
         await operationPage.startDeposit(defaultDeposit);
         balance += defaultDeposit;
-        await expect(operationPage.page.getByText(operationPage.depositSuccessMsg, { exact: true })).toBeVisible();
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+
+        //Assert
+        await operationPage.depositSuccess();
+        await operationPage.balanceShowed(balance);
     });
 });
 
@@ -68,25 +88,40 @@ test.describe('Withdrawl Scenarios', () =>{
     });
 
     test('Withdraw a value >= the balance', async({}) => {
+        //Arrange
         const defaultWithdraw = 1001;
+
+        //Action
         await operationPage.startWithdraw(defaultWithdraw);
-        await expect(operationPage.page.getByText(operationPage.withdrawErrorMsg, { exact: true })).toBeVisible();
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+
+        //Assert
+        await operationPage.withdrawNotSuccess();
+        await operationPage.balanceShowed(balance);
     });
 
     test('Withdraw a value invalid', async({}) => {
+        //Arrange
         const defaultWithdraw = 'Joao';
+
+        //Action - Exception due to withdraw field accepts numbers only
         await expect(operationPage.startWithdraw(defaultWithdraw)).rejects.toThrow();
-        await expect(operationPage.page.getByText(operationPage.withdrawErrorMsg, { exact: true })).toBeVisible();
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+
+        //Assert
+        await operationPage.withdrawNotSuccess();
+        await operationPage.balanceShowed(balance);
     });
 
     test('Withdraw a value <= the balance', async({}) => {
+        //Arrange
         const defaultWithdraw = 1000;
+
+        //Action
         await operationPage.startWithdraw(defaultWithdraw);
         balance -= defaultWithdraw;
-        await expect(operationPage.page.getByText(operationPage.withdrawSuccessMsg, { exact: true })).toBeVisible();
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+
+        //Assert
+        await operationPage.withdrawSuccess();
+        await operationPage.balanceShowed(balance);
     });
 });
 
@@ -99,7 +134,8 @@ test.describe('Load screen test', ()=> {
     });
 
     test('Page reload test', async({})=>{
-        await expect(operationPage.page.getByRole('strong').getByText(balance.toString(), { exact: true })).toBeVisible();
+        //Assert
+        await operationPage.balanceShowed(balance);
     });
 });
 
