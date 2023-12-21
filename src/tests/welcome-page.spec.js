@@ -7,6 +7,7 @@ let page;
 let operationPage;
 let balance = 0;
 
+//Log in the system before start testing
 test.beforeAll('Login into the system', async({browser}) => {
     //Need login to access Operations feature
     console.log("Login as Harry Potter");
@@ -16,6 +17,7 @@ test.beforeAll('Login into the system', async({browser}) => {
     await login.login();
 });
 
+//Logout system after testing
 test.afterAll('Logout', async({browser}) => {
     console.log("Logout application");
     const login = new LoginPage(page);
@@ -24,6 +26,7 @@ test.afterAll('Logout', async({browser}) => {
 
 test.describe('Deposit Scenario', () => {
 
+    //Create a OperationPage before start testing
     test.beforeAll('Setup deposit test cases', async({})=> {
         operationPage = new OperationPage(page);
     });
@@ -83,8 +86,6 @@ test.describe('Withdrawl Scenarios', () =>{
 
     test.beforeAll('Setup withdraw tests', async({})=> {
         operationPage = new OperationPage(page);
-        //const deposit = 1000;
-        //await operationPage.startDeposit(deposit);
     });
 
     test('Withdraw a value >= the balance', async({}) => {
@@ -126,6 +127,7 @@ test.describe('Withdrawl Scenarios', () =>{
 });
 
 test.describe('Load screen test', ()=> {
+    //Do a 100 Dollars deposit and refresh the page
     test.beforeAll('Reload page', async({})=> {
         const defaultDeposit = 100;
         await operationPage.startDeposit(defaultDeposit);
