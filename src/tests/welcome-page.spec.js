@@ -2,31 +2,42 @@ import {test, expect} from '@playwright/test'
 import { OperationPage } from '../page-objects/operation-page';
 import { LoginPage } from '../page-objects/login-page';
 
+/*
+* Page Object Pattern has been used in the tests.
+* This class provides a abstraction and the core logic is in operation-page.js file
+*/
 
+//Global variables
 let page;
-let operationPage;
-let balance = 0;
+let operationPage; //Welcome page with the possible operations (Transaction, Deposit, Withdraw)
+let balance = 0; 
 
 //Log in the system before start testing
 test.beforeAll('Login into the system', async({browser}) => {
+
     //Need login to access Operations feature
     console.log("Login as Harry Potter");
     page = await browser.newPage();
     const login = new LoginPage(page);
+
+    //Action to login as test user Harry Potter.
     await login.gotoLoginPage();
     await login.login();
 });
 
 //Logout system after testing
-test.afterAll('Logout', async({browser}) => {
+test.afterAll('Logout', async({}) => {
     console.log("Logout application");
     const login = new LoginPage(page);
+
+    //Action to logout
     login.logout();
 });
 
+//Deposit test cases
 test.describe('Deposit Scenario', () => {
 
-    //Create a OperationPage before start testing
+    //Create an OperationPage before start testing
     test.beforeAll('Setup deposit test cases', async({})=> {
         operationPage = new OperationPage(page);
     });
@@ -73,7 +84,7 @@ test.describe('Deposit Scenario', () => {
 
         //Action
         await operationPage.startDeposit(defaultDeposit);
-        balance += defaultDeposit;
+        balance += defaultDeposit; //Updated the balance
 
         //Assert
         await operationPage.depositSuccess();
@@ -81,9 +92,10 @@ test.describe('Deposit Scenario', () => {
     });
 });
 
+//Withdraw test cases
 test.describe('Withdrawl Scenarios', () =>{
     
-
+    //Create an OperationPage before start testing
     test.beforeAll('Setup withdraw tests', async({})=> {
         operationPage = new OperationPage(page);
     });
@@ -126,7 +138,9 @@ test.describe('Withdrawl Scenarios', () =>{
     });
 });
 
+//See balance test cases
 test.describe('Load screen test', ()=> {
+
     //Do a 100 Dollars deposit and refresh the page
     test.beforeAll('Reload page', async({})=> {
         const defaultDeposit = 100;
@@ -135,8 +149,9 @@ test.describe('Load screen test', ()=> {
         await operationPage.page.reload();
     });
 
+    //Test failing - see TC04 in Functional document
     test('Page reload test', async({})=>{
-        //Assert
+        //Assert - The page must be UserInformations up to date
         await operationPage.checkUserInformation(balance);
     });
 });
